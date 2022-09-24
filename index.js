@@ -17,6 +17,7 @@ function operation() {
       'Consultar Saldo',
       'Depositar',
       'Sacar',
+      'Transferir',
       'Sair'
     ]
   }]).then((answer) => {
@@ -30,6 +31,8 @@ function operation() {
       getBalance()
     } else if(action === 'Sacar') {
       withdraw()
+    } else if(action === 'Transferir') {
+      transfer()
     } else if(action === 'Sair'){
       console.log(chalk.bgBlue.black('Até logo!'))
       process.exit()
@@ -218,4 +221,45 @@ function removeAmount(accountName, amount) {
   console.log(
     chalk.green(`Foi realizado um saque de R$${amount} da sua conta!`),
   )
+}
+
+function transfer() {
+  inquirer
+    .prompt([
+      {
+        name: 'accountName',
+        message: 'Qual o nome da sua conta?',
+      },
+      {
+        name:'accountName2',
+        message: 'Qual o nome da conta que irá transferir'
+      }
+    ])
+    .then((answer) => {
+      const accountName = answer['accountName']
+      const accountName2 = answer['accountName2']
+
+      if (!checkAccount(accountName)) {
+        return transfer()
+      }
+
+      if (!checkAccount(accountName2)) {
+        return transfer()
+      }
+
+      inquirer
+        .prompt([
+          {
+            name: 'amount',
+            message: 'Quanto você deseja transferir?',
+          },
+        ])
+        .then((answer) => {
+          const amount = answer['amount']
+
+          removeAmount(accountName, amount)
+          addAmount(accountName2, amount)
+          operation()
+        })
+    })
 }
