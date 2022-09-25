@@ -110,7 +110,7 @@ function checkAccount(accountName) {
   return true
 }
 
-function addAmount(accountName, amount) {
+function addAmount(accountName, amount, transfer = false) {
   const accountData = getAccount(accountName)
   if(!amount) {
     console.log(chalk.bgRed.black('Valor inválido. Tente novamente!'))
@@ -124,7 +124,11 @@ function addAmount(accountName, amount) {
     console.log(err)
   })
 
-  console.log(chalk.green(`Foi depositado o valor de R$${amount} na sua conta!`))
+  if(transfer === false){
+    console.log(chalk.green(`Foi depositado o valor de R$${amount} na sua conta!`))
+  } else {
+    console.log(chalk.green(`Foi transferido o valor de R$${amount} para a conta do ${accountName}!`))
+  }
 }
 
 function getAccount(accountName) {
@@ -258,7 +262,7 @@ function transfer() {
           const amount = answer['amount']
 
           removeAmount(accountName, amount)
-          addAmount(accountName2, amount)
+          addAmount(accountName2, amount, true)
           operation()
         })
     })
